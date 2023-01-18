@@ -17,6 +17,6 @@ All views are inline to sync update of scrolling on flags or click on the tabs o
 4. **domain**: Usecases and interfaces
 
 ![Home](https://github.com/droider91/country-list/blob/main/gifs/enter.jpg)
-![Search](gifs/search.jpg)
-![Scrolling](scrollup.jpg)
-![Search ](search2.jpg)
+![Search](https://github.com/droider91/country-list/blob/main/gifs/search.jpg)
+![Scrolling]([scrollup.jpg](https://github.com/droider91/country-list/blob/main/gifs/scrollup.jpg))
+![Search ]([search2.jpg](https://github.com/droider91/country-list/blob/main/gifs/search2.jpg))
