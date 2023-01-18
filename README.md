@@ -15,3 +15,8 @@ All views are inline to sync update of scrolling on flags or click on the tabs o
 1. **data**: It contains all the data accessing and manipulating components.
 2. **ui**: View classes along with their corresponding ViewModel.
 4. **domain**: Usecases and interfaces
+
+![Home](./gifs/enter.jpg)
+![Search](https://github.com/droider91/country-list/blob/main/gifs/search.jpg)
+![Scrolling]([scrollup.jpg](https://github.com/droider91/country-list/blob/main/gifs/scrollup.jpg))
+![Search ]([search2.jpg](https://github.com/droider91/country-list/blob/main/gifs/search2.jpg))
