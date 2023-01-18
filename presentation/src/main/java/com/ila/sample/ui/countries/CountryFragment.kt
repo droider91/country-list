@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.ahmadhamwi.tabsync.TabbedListMediator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.ila.sample.databinding.FragmentCountryBinding
@@ -16,6 +15,7 @@ import com.ila.sample.entities.CountriesItemP
 import com.ila.sample.ui.base.BaseFragment
 import com.ila.sample.ui.countries.CountrtyViewModel.NavigationState.CountryDetails
 import com.ila.sample.ui.countries.CountrtyViewModel.UiState.*
+import com.ila.sample.ui.countries.tabs.TabbedListMediator
 import com.ila.sample.util.hide
 import com.ila.sample.util.show
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,7 +93,7 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
     private fun listenTabLayout() {
         binding.tabLayout.setOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.viewPager.setCurrentItem(tab!!.position, false)
+                binding.viewPager.setCurrentItem(tab!!.position, true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -112,7 +112,7 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
                 val tab = binding.tabLayout.getTabAt(position)
                 tab?.select()
                 val layoutManager = binding.scrollableContent.layoutManager as LinearLayoutManager
-                layoutManager.scrollToPositionWithOffset(position, 0)
+                layoutManager.scrollToPositionWithOffset(position, 20)
             }
         }
         binding.viewPager.registerOnPageChangeCallback(myPageChangeCallback)
@@ -129,9 +129,13 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
         tab?.select()
     }
 
-    private fun createLayoutManager(): LinearLayoutManager = LinearLayoutManager(
-        requireActivity(), RecyclerView.VERTICAL, false
-    )
+    private fun createLayoutManager(): LinearLayoutManager {
+        val mgr = LinearLayoutManager(
+            requireActivity(), RecyclerView.VERTICAL, false
+        )
+        mgr.isSmoothScrollbarEnabled = true
+        return mgr
+    }
 
     private fun observeViewModel() = with(viewModel) {
 
@@ -147,7 +151,7 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
                     tabbedListMediator = TabbedListMediator(
                         binding.scrollableContent,
                         binding.tabLayout,
-                        it.countries.list.indices.toList()
+                        it.countries.list.indices.toList(), true
                     )
                     tabbedListMediator.attach()
 
@@ -158,10 +162,6 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
                     binding.progressBar.hide()
                 }
                 is Error -> {
-                    /* var str = requireContext().applicationContext.getJsonFromAssets("data.json")
-                     val jsonElement = JsonParser.parseString(str)
-                     val listType: Type = object : TypeToken<List<CountriesItemP?>?>() {}.type
-                     val list = Gson().fromJson(jsonElement, listType)*/
                 }
             }
         }

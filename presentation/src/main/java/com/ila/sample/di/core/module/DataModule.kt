@@ -28,12 +28,12 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideFruitRemoveDataSource(demoAPI: DemoAPI, dispatchers: DispatchersProvider): CountryDataSource.Remote {
+    fun provideCountryRemoteDataSource(demoAPI: DemoAPI, dispatchers: DispatchersProvider): CountryDataSource.Remote {
         return CountryRemoteDataSource(demoAPI, dispatchers)
     }
 
     @Provides
-    fun provideGetFruitUseCase(countrysRepository: CountryRepository): GetCountriesUseCase {
+    fun provideGetCountryUseCase(countrysRepository: CountryRepository): GetCountriesUseCase {
         return GetCountriesUseCase(countrysRepository)
     }
 }
