@@ -16,7 +16,7 @@ All views are inline to sync update of scrolling on flags or click on the tabs o
 2. **ui**: View classes along with their corresponding ViewModel.
 4. **domain**: Usecases and interfaces
 
-![Home](enter.jpg)
+![Home]([enter.jpg](https://github.com/droider91/country-list/blob/main/gifs/enter.jpg))
 ![Search](search.jpg)
 ![Scrolling](scrollup.jpg)
 ![Search ](search2.jpg)
