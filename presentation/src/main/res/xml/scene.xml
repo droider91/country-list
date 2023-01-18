@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:motionInterpolator="easeInOut">
+        <OnSwipe
+            motion:dragDirection="dragUp"
+            motion:touchAnchorId="@id/scrollable_content" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:elevation="4dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
+        <Constraint
+            android:id="@id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@id/viewPager"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="12dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent" />
+
+        <Constraint
+            android:id="@id/tabLayout"
+            android:layout_width="120dp"
+            android:layout_height="12dp"
+            android:elevation="4dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginBottom="8dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/viewPager" />
+
+
+    </ConstraintSet>
+</MotionScene>
