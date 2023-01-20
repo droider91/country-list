@@ -1,39 +1,39 @@
 package com.ila.sample.ui.countries
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayoutMediator
 import com.ila.sample.databinding.FragmentCountryBinding
 import com.ila.sample.entities.CountriesItemP
+import com.ila.sample.entities.LanguageP
 import com.ila.sample.ui.base.BaseFragment
 import com.ila.sample.ui.countries.CountrtyViewModel.NavigationState.CountryDetails
 import com.ila.sample.ui.countries.CountrtyViewModel.UiState.*
-import com.ila.sample.ui.countries.tabs.TabbedListMediator
-import com.ila.sample.util.hide
-import com.ila.sample.util.show
 import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
- * Created by devendra on 13/05/2020
+ * Created by devendra on 17/01/2023
  */
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
 class CountryFragment : BaseFragment<FragmentCountryBinding>() {
 
-    private lateinit var tabbedListMediator: TabbedListMediator
     private val viewModel: CountrtyViewModel by viewModels()
-    private var list = listOf<CountriesItemP>()
+    private var list = ArrayList<CountriesItemP>()
+    private var languagePList = ArrayList<LanguageP>()
 
-    private val countryAdapter by lazy { CountryAdapter() }
+    private val countryAdapter by lazy { CountryAdapter(languagePList) }
+    private val viewPager2Adapter by lazy { ViewPager2Adapter(list) }
 
     override fun inflateViewBinding(inflater: LayoutInflater): FragmentCountryBinding =
         FragmentCountryBinding.inflate(inflater)
@@ -45,8 +45,6 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
 
     private fun setupViews() {
         setupRecyclerView()
-        listenTabLayout()
-        listenViewPager()
         handleSearch()
     }
 
@@ -58,42 +56,18 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                updateRecyclerView(newText!!)
+                countryAdapter.filter.filter(newText)
                 return false
             }
 
         })
     }
 
-    private fun updateRecyclerView(searchTerm: String) {
-        var filteredList: List<CountriesItemP> =
-            list.filter { s -> s.name.toLowerCase().contains(searchTerm.toLowerCase()) }
-        countryAdapter.submitList(filteredList)
-        updateViewPagerTabLayout(filteredList)
-    }
-
-    private fun updateViewPagerTabLayout(filteredList: List<CountriesItemP>) {
-        binding.viewPager.adapter = ViewPager2Adapter(filteredList)
-        tabbedListMediator.detach()
-        binding.tabLayout.removeAllTabs()
-        if (filteredList.isNotEmpty()) {
-            repeat(filteredList.size) {
-                binding.tabLayout.addTab(binding.tabLayout.newTab().setText(""))
-            }
-            tabbedListMediator = TabbedListMediator(
-                binding.scrollableContent,
-                binding.tabLayout,
-                filteredList.indices.toList()
-            )
-            tabbedListMediator.attach()
-        }
-
-    }
-
     private fun listenTabLayout() {
         binding.tabLayout.setOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.viewPager.setCurrentItem(tab!!.position, true)
+                countryAdapter?.updateList(list[tab.position].languages)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -106,27 +80,9 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
         })
     }
 
-    private fun listenViewPager() {
-        val myPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val tab = binding.tabLayout.getTabAt(position)
-                tab?.select()
-                val layoutManager = binding.scrollableContent.layoutManager as LinearLayoutManager
-                layoutManager.scrollToPositionWithOffset(position, 20)
-            }
-        }
-        binding.viewPager.registerOnPageChangeCallback(myPageChangeCallback)
-    }
-
     private fun setupRecyclerView() = with(binding.scrollableContent) {
-        adapter = countryAdapter
         layoutManager = createLayoutManager()
-
-        val layoutManager = binding.scrollableContent.layoutManager as LinearLayoutManager
-        val firstVisiblePosition: Int = layoutManager.findFirstVisibleItemPosition()
-        binding.viewPager.setCurrentItem(firstVisiblePosition, true)
-        val tab = binding.tabLayout.getTabAt(firstVisiblePosition)
-        tab?.select()
+        adapter = countryAdapter
     }
 
     private fun createLayoutManager(): LinearLayoutManager {
@@ -142,24 +98,16 @@ class CountryFragment : BaseFragment<FragmentCountryBinding>() {
         getUiState().observe {
             when (it) {
                 is FeedUiState -> {
-                    list = it.countries.list
-                    countryAdapter.submitList(it.countries.list)
-                    binding.viewPager.adapter = ViewPager2Adapter(it.countries.list)
-                    repeat(it.countries.list.size) {
-                        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(""))
-                    }
-                    tabbedListMediator = TabbedListMediator(
-                        binding.scrollableContent,
-                        binding.tabLayout,
-                        it.countries.list.indices.toList(), true
-                    )
-                    tabbedListMediator.attach()
+                    list.addAll(it.countries.list)
+                    languagePList.addAll(list[0].languages)
+                    binding.viewPager.adapter = viewPager2Adapter
+                    countryAdapter.notifyDataSetChanged()
 
-                }
-                is Loading -> binding.progressBar.show()
-                is NotLoading -> {
-                    binding.progressBar.elevation = -3f
-                    binding.progressBar.hide()
+                    TabLayoutMediator(
+                        binding.tabLayout,
+                        binding.viewPager
+                    ) { tab, position -> }.attach()
+                    listenTabLayout()
                 }
                 is Error -> {
                 }

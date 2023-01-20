@@ -1,7 +1,7 @@
 package com.ila.domain.util
 
 /**
- * Created by devendra on 13/05/2020
+ * Created by devendra on 17/01/2023
  */
 sealed class Result<T> {
     data class Success<T>(val data: T) : Result<T>()

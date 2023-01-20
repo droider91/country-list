@@ -4,11 +4,11 @@ import com.ila.domain.entities.CountriesDomain
 import com.ila.domain.util.Result
 
 /**
- * Created by devendra on 13/05/2020
+ * Created by devendra on 17/01/2023
  */
 interface CountryDataSource {
 
-    interface Remote {
-        suspend fun getFruitsFromRemote(): Result<CountriesDomain>
+    interface Local {
+        suspend fun getCountriesFromAssets(): Result<CountriesDomain>
     }
 }
