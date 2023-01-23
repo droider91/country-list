@@ -13,7 +13,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * Created by devendra on 13/05/2020
+ * Created by devendra on 17/01/2023
  */
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 

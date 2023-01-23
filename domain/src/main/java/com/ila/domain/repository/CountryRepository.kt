@@ -4,8 +4,8 @@ import com.ila.domain.entities.CountriesDomain
 import com.ila.domain.util.Result
 
 /**
- * Created by devendra on 13/05/2020
+ * Created by devendra on 17/01/2023
  */
 interface CountryRepository {
-    suspend fun getFruits(): Result<CountriesDomain>
+    suspend fun getCountries(): Result<CountriesDomain>
 }
